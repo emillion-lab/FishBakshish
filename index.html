@@ -381,35 +381,41 @@ hr.div{border:none;border-top:1px solid var(--border);margin:5px 0}
 <script>
 const JSON_URL='https://raw.githubusercontent.com/emillion-lab/FishBakshish/main/taxi_data_SOF23.06.2026.json';
 const SOFIA=[42.6977,23.3219];
-
 const ECO_KW=['ПРИУС','ЙОНИК','НИРО','ХИБРИД','АУРИС','МИРАЙ','КЛАРИУС','ТЕСЛА','НИСАН ЛИФ','КИА ЕВ','КИА Е В'];
 const MINI_KW=['КАДДИ','ТУРАН','ТРАНСПОРТЕР','GALAXY','VITO','КУБО','КУБА','SPACE','МАСТЕР','КАРЕНС','К 7','К 8','К7','К8','ДЖОГЕР','ДОКЕР'];
 const PREM_KW=['БМВ','МЕРЦЕДЕС','АУДИ','ЛЕКСУС','ИНФИНИТИ','ВОЛВО','ТЕСЛА'];
 const ZONES=[[42.6977,23.3219,'Центъра'],[42.685,23.310,'НДК'],[42.705,23.340,'Лозенец'],[42.690,23.360,'Младост'],[42.700,23.295,'Илинден'],[42.720,23.335,'Дружба'],[42.675,23.325,'Борово'],[42.695,23.305,'Красна поляна'],[42.710,23.370,'Студентски'],[42.685,23.285,'Люлин'],[42.660,23.295,'Овча купел'],[42.730,23.320,'Надежда'],[42.670,23.345,'Дружба 1'],[42.700,23.375,'Искър'],[42.715,23.305,'Банишора'],[42.660,23.320,'Витоша'],[42.688,23.355,'Слатина']];
 const AVATARS=['👨','👩','👨🏽','👩🏽','👨🏿','👩🏿','👨🏻','👩🏻','👴','👳','🧔','👱','🧑','👨‍🦳','👨‍🦲','🧑🏽','👱🏽','🧑🏻'];
-const PHONES=['+359 88','+ 359 87','+359 89','+359 882','+359 883','+359 884','+359 885','+359 886','+359 888'];
-
+const PHONES=['+359 88','+359 87','+359 89','+359 882','+359 883','+359 884','+359 885','+359 886','+359 888'];
 function ctype(m){const u=m.toUpperCase();if(PREM_KW.some(k=>u.includes(k)))return'premium';if(MINI_KW.some(k=>u.includes(k)))return'minivan';if(ECO_KW.some(k=>u.includes(k)))return'eco';return'sedan';}
 function genPhone(){return PHONES[Math.floor(Math.random()*PHONES.length)]+' '+Math.floor(Math.random()*900+100)+' '+Math.floor(Math.random()*9000+1000);}
 function rnd(a,b){return a+Math.random()*(b-a);}
 function isNight(){const h=new Date().getHours();return h>=22||h<6;}
 function esc(s){return(s||'').toString().replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-
 let ALL=[],mapFilter='all',listFlags=new Set(),selTaxi=null,activeRide=null;
 let map,markers=[],routeLine=null,userPos=[...SOFIA],sheetOpen=true;
-let _seed=2026; function srnd(){_seed=(_seed*1664525+1013904223)&0xffffffff;return((_seed>>>0)/0xffffffff);}
+let _seed=2026;function srnd(){_seed=(_seed*1664525+1013904223)&0xffffffff;return((_seed>>>0)/0xffffffff);}
 
 async function loadData(){
-  setLoad(10,'Свързване с регистъра…');
+  setLoad(10,'Свързване…');
   try{
-    const r=await fetch(JSON_URL);
-    setLoad(40,'Получаване на данни…');
-    const raw=await r.json();
-    setLoad(70,'Обработка…');
-    await new Promise(res=>setTimeout(res,100));
+    const res=await fetch(JSON_URL);
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    setLoad(35,'Получаване на данни…');
+    const text=await res.text();
+    setLoad(65,'Обработка…');
+    const raw=JSON.parse(text);
+    setLoad(85,'Изграждане на списъка…');
+    await new Promise(r=>setTimeout(r,50));
     buildTaxis(raw);
   }catch(e){
-    document.getElementById('loading').innerHTML='<div style="color:#ef4444;font-size:14px;text-align:center;padding:20px">⚠️ Данните не се заредиха.<br><small style="color:#777">Провери интернет връзката</small><br><br><button onclick="location.reload()" style="background:#f5c518;color:#000;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px">Опитай отново</button></div>';
+    console.error('Load error:',e);
+    document.getElementById('loading').innerHTML=`
+      <div style="color:#ef4444;font-size:15px;text-align:center;padding:24px;max-width:320px">
+        ⚠️ Данните не се заредиха<br>
+        <small style="color:#777;font-size:13px;display:block;margin:8px 0">${e.message}</small>
+        <button onclick="location.reload()" style="margin-top:14px;background:#f5c518;color:#000;border:none;border-radius:10px;padding:12px 24px;font-size:15px;font-weight:900;cursor:pointer">🔄 Опитай отново</button>
+      </div>`;
   }
 }
 
