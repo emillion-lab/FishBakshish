@@ -1,0 +1,22 @@
+{
+  "currency": "EUR",
+  "symbol": "€",
+  "updated": "2026-06-23",
+  "source": "Официална тарифна стикерка ИААА",
+  "day": {
+    "hours": "06:00-22:00",
+    "startFee": 1.49,
+    "perKm": 0.75,
+    "waitPerMin": 0.25,
+    "booking": 0.59,
+    "outOfCityPerKm": 0.75
+  },
+  "night": {
+    "hours": "22:00-06:00",
+    "startFee": 1.69,
+    "perKm": 0.85,
+    "waitPerMin": 0.25,
+    "booking": 0.59,
+    "outOfCityPerKm": 0.85
+  }
+}
