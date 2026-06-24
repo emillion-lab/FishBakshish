@@ -71,18 +71,19 @@ select.ssort{background:var(--s2);border:1px solid var(--border);border-radius:8
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 /* ── TAXI CARD ── */
-.tc{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:0;cursor:pointer;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.tc{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:0;cursor:pointer;overflow:hidden;transition:border-color .15s,box-shadow .15s;display:flex;flex-direction:column}
 .tc:active,.tc.sel{border-color:var(--y);box-shadow:0 0 0 1px var(--y)}
-/* coloured top accent bar instead of stripe */
-.tc-accent{height:4px;width:100%;background:var(--border2)}
+.tc-accent{height:4px;width:100%;flex-shrink:0}
 .tc-accent.on{background:var(--gr)}
 .tc-accent.prem{background:var(--pu)}
 .tc-accent.eco{background:var(--gr)}
 .tc-accent.van{background:var(--or)}
-.tc-body{padding:14px 14px 0}
+.tc-accent.off{background:var(--border2)}
+.tc-body{padding:14px 14px 0;flex:1}
 /* ROW 1: avatar + name block + eta */
 .tc-row1{display:flex;gap:12px;align-items:center;margin-bottom:10px}
-.av{width:54px;height:54px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:3px solid var(--border2)}
+.av{width:54px;height:54px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:3px solid var(--border2);overflow:hidden;position:relative}
+.av img{width:32px;height:32px;object-fit:contain;filter:drop-shadow(0 1px 2px #0006)}
 .av.on{border-color:var(--gr)}
 .av.prem{border-color:var(--pu)}
 .av.eco{border-color:var(--gr)}
@@ -108,8 +109,8 @@ select.ssort{background:var(--s2);border:1px solid var(--border);border-radius:8
 .to{background:rgba(249,115,22,.09);color:var(--or);border-color:rgba(249,115,22,.3)}
 .tp{background:rgba(168,85,247,.09);color:var(--pu);border-color:rgba(168,85,247,.3)}
 .tmu{background:rgba(119,119,119,.07);color:var(--mu);border-color:var(--border)}
-/* ROW 4: price bar - full width, prominent */
-.tc-pricebar{background:var(--s1);border-top:1px solid var(--border);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+/* ROW 4: price bar */
+.tc-pricebar{background:var(--s1);border-top:1px solid var(--border);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-shrink:0}
 .price-block{}
 .price-main{font-size:26px;font-weight:900;color:var(--y);line-height:1}
 .price-unit{font-size:14px;font-weight:700;color:var(--mu)}
@@ -118,6 +119,12 @@ select.ssort{background:var(--s2);border:1px solid var(--border);border-radius:8
 .tc-btns{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .btn-call{background:rgba(34,197,94,.12);color:var(--gr);border:2px solid rgba(34,197,94,.35);border-radius:10px;padding:11px 14px;font-size:18px;font-weight:900;cursor:pointer;text-decoration:none;line-height:1}
 .btn-ord{background:var(--y);color:#000;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:900;cursor:pointer;white-space:nowrap}
+/* ── MAP HINT ── */
+.map-hint{margin:0 12px 8px;background:rgba(245,197,24,.07);border:1px solid rgba(245,197,24,.2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--mu);line-height:1.5}
+.map-hint b{color:var(--y)}
+.map-hint-filters{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.map-hint-chip{background:var(--s3);border:1px solid var(--border);border-radius:12px;padding:3px 9px;font-size:11px;font-weight:700;cursor:pointer;color:var(--light,#94a3b8);transition:.12s}
+.map-hint-chip:hover{border-color:var(--y);color:var(--y)}
 /* ── ROUTE BOX ── */
 .route-box{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
 .route-pt{display:flex;align-items:stretch;gap:0}
@@ -242,12 +249,22 @@ hr.div{border:none;border-top:1px solid var(--border);margin:5px 0}
       <div class="chip" onclick="setMF(this,'child')">👶 Детско</div>
       <div class="chip" onclick="setMF(this,'cheap')">💰 Най-евтини</div>
     </div>
-    <div class="rhdr">Показани: <b id="mapCt">0</b>
+    <div class="rhdr">На картата: <b id="mapCt">0</b> от <b id="mapTotal">0</b>
       <select class="ssort" onchange="applyMap()">
         <option value="eta">⚡ Бързина</option>
         <option value="price">💰 Цена</option>
         <option value="rating">⭐ Рейтинг</option>
       </select>
+    </div>
+    <div class="map-hint" id="mapHint" style="display:none">
+      💡 Показани са <b id="mapShown">250</b> от <b id="mapAll">0</b> таксита. Филтрирай за да видиш всички:
+      <div class="map-hint-filters">
+        <span class="map-hint-chip" onclick="setMFHint('online')">🟢 Само онлайн</span>
+        <span class="map-hint-chip" onclick="setMFHint('near')">⚡ До 5 мин</span>
+        <span class="map-hint-chip" onclick="setMFHint('premium')">💎 Премиум</span>
+        <span class="map-hint-chip" onclick="setMFHint('eco')">🌿 Еко</span>
+        <span class="map-hint-chip" onclick="setMFHint('minivan')">🚐 Ван</span>
+      </div>
     </div>
     <div id="mapList"></div>
   </div>
@@ -562,11 +579,50 @@ function sortD(data,key){
 }
 
 /* ── CARD HTML ── */
+// Car brand logos from Wikipedia CDN (SVG) — keyed by Bulgarian first word
+const BRAND_LOGOS={
+  'КИА':'https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/Kia-logo.svg/120px-Kia-logo.svg.png',
+  'ХЮНДАЙ':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Hyundai_Motor_Company_logo.svg/120px-Hyundai_Motor_Company_logo.svg.png',
+  'ФОЛКСВАГЕН':'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/120px-Volkswagen_logo_2019.svg.png',
+  'ШКОДА':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Skoda_Auto_2011_logo.svg/120px-Skoda_Auto_2011_logo.svg.png',
+  'ТОЙОТА':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carlogo.svg/120px-Toyota_carlogo.svg.png',
+  'ОПЕЛ':'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Opel_logo.svg/120px-Opel_logo.svg.png',
+  'РЕНО':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2021_Text.svg/120px-Renault_2021_Text.svg.png',
+  'ДАЧИЯ':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Dacia_2021_logo.svg/120px-Dacia_2021_logo.svg.png',
+  'ФИАТ':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Fiat_Automobiles_2020_logo.svg/120px-Fiat_Automobiles_2020_logo.svg.png',
+  'ШЕВРОЛЕТ':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Chevrolet_logo.svg/120px-Chevrolet_logo.svg.png',
+  'ФОРД':'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/120px-Ford_logo_flat.svg.png',
+  'МЕРЦЕДЕС':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/120px-Mercedes-Logo.svg.png',
+  'БМВ':'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/120px-BMW.svg.png',
+  'АУДИ':'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Audi-Logo_2016.svg/120px-Audi-Logo_2016.svg.png',
+  'ТЕСЛА':'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tesla_T_symbol.svg/120px-Tesla_T_symbol.svg.png',
+  'НИСАН':'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Nissan_2020_logo.svg/120px-Nissan_2020_logo.svg.png',
+  'СЕАТ':'https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/SEAT_logo_2012.svg/120px-SEAT_logo_2012.svg.png',
+  'СИТРОЕН':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Citro%C3%ABn_logo.svg/120px-Citro%C3%ABn_logo.svg.png',
+  'ЛЕКСУС':'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Lexus_division_emblem.svg/120px-Lexus_division_emblem.svg.png',
+  'ВОЛВО':'https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Volvo_Cars_logo.svg/120px-Volvo_Cars_logo.svg.png',
+};
+
+function brandLogo(model){
+  const first=model.split(' ')[0].toUpperCase();
+  return BRAND_LOGOS[first]||null;
+}
+
+function brandAvatarHtml(t){
+  const logo=brandLogo(t.m);
+  const ac=avClass(t);
+  if(logo){
+    return`<div class="av ${ac}"><img src="${logo}" alt="" onerror="this.parentNode.innerHTML='${t.avatar}'"></div>`;
+  }
+  return`<div class="av ${ac}">${t.avatar}</div>`;
+}
+
 function accentClass(t){
+  if(!t.on) return 'off';
   if(t.t==='premium') return 'prem';
   if(t.t==='eco') return 'eco';
   if(t.t==='minivan') return 'van';
-  return t.on?'on':'';
+  return 'on';
 }
 function avClass(t){
   if(t.t==='premium') return 'prem';
@@ -597,7 +653,7 @@ function cardHtml(t){
   <div class="tc-accent ${ac}"></div>
   <div class="tc-body">
     <div class="tc-row1">
-      <div class="av ${avClass(t)}">${t.avatar}</div>
+      ${brandAvatarHtml(t)}
       <div class="tc-mid">
         <div class="tc-name">${esc(nm)}</div>
         <div class="tc-model">${esc(t.m)} · ${t.y}</div>
@@ -655,27 +711,31 @@ function mIcon(t){
     iconSize:[26,40],iconAnchor:[13,40]});
 }
 
-function renderMarkers(){
+function renderMarkers(data){
   markers.forEach(m=>map.removeLayer(m));markers=[];
-  let data=applyBase(ALL);
-  const q=(document.getElementById('mapQ')?.value||'').toLowerCase();
-  if(q)data=data.filter(t=>t.m.toLowerCase().includes(q)||t.p.toLowerCase().includes(q)||t.d.toLowerCase().includes(q));
-  data.slice(0,250).forEach(t=>{
+  (data||applyBase(ALL)).slice(0,250).forEach(t=>{
     const drvName=t.d||t.op.split(' ')[0];
     const r=isNight()?t.kn:t.kd;
+    const logo=brandLogo(t.m);
+    const logoHtml=logo?`<img src="${logo}" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px" onerror="this.remove()">`:'';
     const m=L.marker([t.la,t.ln],{icon:mIcon(t)}).addTo(map);
-    m.bindPopup(`<div style="font-size:14px;line-height:1.7;min-width:200px">
-      <div style="font-size:16px;font-weight:900;color:#f5c518;margin-bottom:4px">${esc(drvName)}</div>
-      <div style="color:#ccc;font-weight:600;margin-bottom:4px">${esc(t.m)} (${t.y})</div>
+    m.bindPopup(`<div style="font-size:14px;line-height:1.7;min-width:210px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        ${logo?`<div style="width:36px;height:36px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><img src="${logo}" style="width:28px;height:28px;object-fit:contain" onerror="this.parentNode.style.display='none'"></div>`:''}
+        <div>
+          <div style="font-size:16px;font-weight:900;color:#f5c518;line-height:1.2">${esc(drvName)}</div>
+          <div style="color:#aaa;font-size:12px">${esc(t.m)} · ${t.y}</div>
+        </div>
+      </div>
       <div style="font-family:monospace;background:#f5c518;color:#000;padding:3px 8px;border-radius:4px;font-size:13px;font-weight:900;display:inline-block;margin-bottom:6px">${esc(t.p)}</div>
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-        <span style="color:#22c55e;font-weight:900;font-size:15px">${r.toFixed(2)}€/км</span>
-        <span style="color:#aaa">⏱ ${t.et} мин</span>
-        <span style="color:#f5c518">⭐ ${t.rt}</span>
+        <span style="color:#22c55e;font-weight:900;font-size:16px">${r.toFixed(2)}€/км</span>
+        <span style="color:#aaa;font-size:12px">⏱ ${t.et} мин</span>
+        <span style="color:#f5c518;font-size:12px">⭐ ${t.rt}</span>
       </div>
-      <div style="color:#06b6d4;font-size:12px;font-weight:600;margin-bottom:8px">🏢 ${esc(t.op)}</div>
+      <div style="color:#06b6d4;font-size:12px;margin-bottom:8px">🏢 ${esc(t.op)}</div>
       <button onclick="window._om(${t.id})" style="background:#f5c518;color:#000;border:none;border-radius:8px;padding:10px 14px;font-size:14px;font-weight:900;cursor:pointer;width:100%">🚕 Поръчай</button>
-    </div>`,{maxWidth:240});
+    </div>`,{maxWidth:250});
     markers.push(m);
   });
 }
@@ -692,22 +752,83 @@ window._om=id=>openModal(id);
 
 function applyMap(){
   let data=applyBase(ALL);
-  const q=(document.getElementById('mapQ')?.value||'').toLowerCase();
-  if(q)data=data.filter(t=>t.m.toLowerCase().includes(q)||t.p.toLowerCase().includes(q)||t.d.toLowerCase().includes(q));
+  const q=(document.getElementById('mapQ')?.value||'').toLowerCase().trim();
+  if(q)data=data.filter(t=>t.m.toLowerCase().includes(q)||t.p.toLowerCase().includes(q)||t.d.toLowerCase().includes(q)||t.op.toLowerCase().includes(q));
   const sort=document.querySelector('#pg-map select.ssort')?.value||'eta';
   data=sortD(data,sort);
-  document.getElementById('mapCt').textContent=data.length;
-  document.getElementById('mapList').innerHTML=data.slice(0,25).map(cardHtml).join('');
-  if(map)renderMarkers();
+  const total=data.length;
+  const shown=Math.min(250,total);
+  document.getElementById('mapCt').textContent=shown;
+  document.getElementById('mapTotal').textContent=total;
+  // Show hint when more than 250 results
+  const hint=document.getElementById('mapHint');
+  if(total>250){
+    hint.style.display='block';
+    document.getElementById('mapShown').textContent=250;
+    document.getElementById('mapAll').textContent=total;
+  } else {
+    hint.style.display='none';
+  }
+  // Show 20 cards in list
+  document.getElementById('mapList').innerHTML=data.slice(0,20).map(cardHtml).join('');
+  if(map)renderMarkers(data);
 }
 
+function setMFHint(f){
+  // Activate chip in map filter row
+  document.querySelectorAll('#mapChips .chip').forEach(c=>c.classList.remove('on'));
+  const chip=[...document.querySelectorAll('#mapChips .chip')].find(c=>c.getAttribute('onclick')?.includes("'"+f+"'"));
+  if(chip) chip.classList.add('on');
+  mapFilter=f;
+  applyMap();
+}
+
+let listPage=0;
+const PAGE=30;
+
 function renderList(){
+  listPage=0;
   let data=applySearch(ALL);
   data=sortD(data,document.getElementById('listSort')?.value||'eta');
   document.getElementById('listCt').textContent=data.length;
   const sc=document.getElementById('listScroll');
-  if(!data.length){sc.innerHTML='<div class="empty"><div class="empty-ico">🔍</div>Няма резултати<br><small style="color:var(--mu)">Промени филтрите</small></div>';return;}
-  sc.innerHTML=data.slice(0,60).map(cardHtml).join('');
+  if(!data.length){
+    sc.innerHTML='<div class="empty"><div class="empty-ico">🔍</div>Няма резултати<br><small style="color:var(--mu)">Промени филтрите</small></div>';
+    return;
+  }
+  // Store filtered data for pagination
+  window._listData=data;
+  sc.innerHTML=data.slice(0,PAGE).map(cardHtml).join('');
+  // Add load more button if needed
+  if(data.length>PAGE){
+    const btn=document.createElement('button');
+    btn.id='loadMoreBtn';
+    btn.style.cssText='display:block;width:100%;padding:14px;background:var(--s3);border:1px solid var(--border);border-radius:10px;color:var(--mu);font-size:14px;font-weight:700;cursor:pointer;margin-top:4px';
+    btn.textContent=`Зареди още (${data.length-PAGE} останали)`;
+    btn.onclick=loadMore;
+    sc.appendChild(btn);
+  }
+}
+
+function loadMore(){
+  listPage++;
+  const data=window._listData||[];
+  const start=listPage*PAGE;
+  const end=start+PAGE;
+  const btn=document.getElementById('loadMoreBtn');
+  const sc=document.getElementById('listScroll');
+  // Insert cards before the button
+  const frag=document.createDocumentFragment();
+  const tmp=document.createElement('div');
+  tmp.innerHTML=data.slice(start,end).map(cardHtml).join('');
+  while(tmp.firstChild) frag.appendChild(tmp.firstChild);
+  sc.insertBefore(frag,btn);
+  // Update or remove button
+  if(end>=data.length){
+    btn.remove();
+  } else {
+    btn.textContent=`Зареди още (${data.length-end} останали)`;
+  }
 }
 
 /* ── MODAL ── */
