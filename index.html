@@ -424,51 +424,72 @@ function setLoad(pct,msg){
   document.querySelector('.load-sub').textContent=msg;
 }
 
-function buildTaxis(raw){
-  ALL=[];let idx=0;
-  for(const op of raw){
-    if(op.terminationDate)continue;
-    if(!(op.registratorMunicipalityName||'').startsWith('Община Столична'))continue;
-    const drivers=(op.drivers||[]).map(d=>(d.driverName||'').trim()).filter(Boolean);
-    for(const lvd of(op.taxiLicensesVehiclesDrivers||[])){
-      const lic=lvd.taxiLicense||{},veh=lvd.taxiLicenseVehicle||{};
-      if((lic.validTo||'')<'2026-06-01')continue;
-      const plate=(veh.registerNumber||'').trim();
-      const model=((veh.markAndModel||'').trim());
-      if(!plate||!model)continue;
-      const yr=parseInt((veh.firstRegistrationDate||'2015-01-01').slice(0,4))||2015;
-      const ct=ctype(model);
-      const zone=ZONES[idx%ZONES.length];
-      const opName=(op.operatorName||'').trim();
-      const isPrem=ct==='premium'||(opName.includes('ВОЛТ')||opName.includes('ПРЕМИУМ')||opName.includes('ЕЛИТ')||opName.includes('VIP')||opName.includes('ГОЛД'));
-      const kd=parseFloat((isPrem?rnd(1.10,1.80):ct==='minivan'?rnd(0.88,1.20):ct==='eco'?rnd(0.72,0.95):rnd(0.70,0.92)).toFixed(2));
-      const sd=parseFloat((isPrem?rnd(2.00,3.50):ct==='minivan'?rnd(1.80,2.40):1.49).toFixed(2));
-      ALL.push({
-        id:idx,p:plate,m:model,y:yr,color:['Бял','Черен','Сребрист','Сив','Тъмносин','Бежов'][idx%6],
-        d:drivers[idx%Math.max(drivers.length,1)]||'',
-        op:opName,l:lic.licenseNumber||'',t:ct,
-        phone:genPhone(),avatar:AVATARS[idx%AVATARS.length],
-        sm:srnd()<0.20,ac:srnd()>0.07,ch:srnd()<0.35,pe:srnd()<0.18,ca:srnd()<0.48,en:srnd()<0.28,
-        lr:ct==='premium'||ct==='minivan'||srnd()<0.13,se:ct==='minivan'?7:4,
-        kd,kn:parseFloat((kd+0.10).toFixed(2)),sd,sn:parseFloat((sd+0.20).toFixed(2)),w:0.25,
-        rt:parseFloat(rnd(3.7,5.0).toFixed(1)),ri:Math.floor(rnd(20,9000)),
-        et:Math.floor(rnd(1,16)),on:srnd()<0.52,
-        la:parseFloat((zone[0]+rnd(-0.022,0.022)).toFixed(6)),
-        ln:parseFloat((zone[1]+rnd(-0.022,0.022)).toFixed(6)),
-        zn:zone[2]
-      });
-      idx++;
+function makeTaxi(op,lvd,idx){
+  const lic=lvd.taxiLicense||{},veh=lvd.taxiLicenseVehicle||{};
+  if((lic.validTo||'')<'2026-06-01')return null;
+  const plate=(veh.registerNumber||'').trim();
+  const model=(veh.markAndModel||'').trim();
+  if(!plate||!model)return null;
+  const drivers=(op.drivers||[]).map(d=>(d.driverName||'').trim()).filter(Boolean);
+  const yr=parseInt((veh.firstRegistrationDate||'2015-01-01').slice(0,4))||2015;
+  const ct=ctype(model);
+  const zone=ZONES[idx%ZONES.length];
+  const opName=(op.operatorName||'').trim();
+  const isPrem=ct==='premium'||['ВОЛТ','ПРЕМИУМ','ЕЛИТ','VIP','ГОЛД'].some(k=>opName.includes(k));
+  const kd=parseFloat((isPrem?rnd(1.10,1.80):ct==='minivan'?rnd(0.88,1.20):ct==='eco'?rnd(0.72,0.95):rnd(0.70,0.92)).toFixed(2));
+  const sd=parseFloat((isPrem?rnd(2.00,3.50):ct==='minivan'?rnd(1.80,2.40):1.49).toFixed(2));
+  return{
+    id:idx,p:plate,m:model,y:yr,
+    d:drivers[idx%Math.max(drivers.length,1)]||'',
+    op:opName,l:lic.licenseNumber||'',t:ct,
+    phone:genPhone(),avatar:AVATARS[idx%AVATARS.length],
+    sm:srnd()<0.20,ac:srnd()>0.07,ch:srnd()<0.35,pe:srnd()<0.18,ca:srnd()<0.48,en:srnd()<0.28,
+    lr:ct==='premium'||ct==='minivan'||srnd()<0.13,se:ct==='minivan'?7:4,
+    kd,kn:parseFloat((kd+0.10).toFixed(2)),sd,sn:parseFloat((sd+0.20).toFixed(2)),w:0.25,
+    rt:parseFloat(rnd(3.7,5.0).toFixed(1)),ri:Math.floor(rnd(20,9000)),
+    et:Math.floor(rnd(1,16)),on:srnd()<0.52,
+    la:parseFloat((zone[0]+rnd(-0.022,0.022)).toFixed(6)),
+    ln:parseFloat((zone[1]+rnd(-0.022,0.022)).toFixed(6)),
+    zn:zone[2]
+  };
+}
+
+// Filter only Sofia active operators first — much smaller list
+function filterSofia(raw){
+  return raw.filter(op=>
+    !op.terminationDate &&
+    (op.registratorMunicipalityName||'').startsWith('Община Столична') &&
+    (op.taxiLicensesVehiclesDrivers||[]).some(lvd=>(lvd.taxiLicense?.validTo||'')>='2026-06-01')
+  );
+}
+
+async function buildTaxis(raw){
+  const sofia=filterSofia(raw);
+  setLoad(88, 'Намерени '+sofia.length+' оператора…');
+  ALL=[];
+  let idx=0;
+  const CHUNK=20; // process 20 operators per frame
+  for(let i=0;i<sofia.length;i+=CHUNK){
+    const slice=sofia.slice(i,i+CHUNK);
+    for(const op of slice){
+      for(const lvd of(op.taxiLicensesVehiclesDrivers||[])){
+        const t=makeTaxi(op,lvd,idx);
+        if(t){ALL.push(t);idx++;}
+      }
     }
+    // yield to browser every CHUNK operators
+    const pct=88+Math.round((i/sofia.length)*11);
+    setLoad(pct,idx+' таксита…');
+    await new Promise(r=>setTimeout(r,0));
   }
   document.getElementById('loadCt').textContent=idx+' таксита заредени';
   setLoad(100,'Готово!');
-  setTimeout(()=>{
-    document.getElementById('loading').classList.add('hide');
-    buildDropdowns();
-    document.getElementById('onBadge').textContent='● '+ALL.filter(t=>t.on).length+' онлайн';
-    checkNight();applyMap();renderList();
-    if(map)renderMarkers();
-  },400);
+  await new Promise(r=>setTimeout(r,300));
+  document.getElementById('loading').classList.add('hide');
+  buildDropdowns();
+  document.getElementById('onBadge').textContent='● '+ALL.filter(t=>t.on).length+' онлайн';
+  checkNight();applyMap();renderList();
+  if(map)renderMarkers();
 }
 
 function buildDropdowns(){
