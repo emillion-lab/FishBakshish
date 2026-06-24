@@ -71,54 +71,64 @@ select.ssort{background:var(--s2);border:1px solid var(--border);border-radius:8
 .scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 /* ── TAXI CARD ── */
-.tc{background:var(--s2);border:1px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;position:relative;overflow:hidden;transition:border-color .15s}
-.tc:active,.tc.sel{border-color:var(--y)}
-.tc-stripe{position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--border2);border-radius:13px 0 0 13px}
-.tc-stripe.on{background:var(--gr)}
-.tc-stripe.prem{background:var(--pu)}
-.tc-stripe.eco{background:var(--gr)}
-.tc-stripe.van{background:var(--or)}
-.tc-top{display:flex;gap:12px;align-items:flex-start;margin-bottom:11px}
-.avatar{width:58px;height:58px;border-radius:50%;background:var(--s3);border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
-.avatar.prem{border-color:var(--pu);border-width:3px}
-.avatar.eco{border-color:var(--gr);border-width:3px}
-.avatar.van{border-color:var(--or);border-width:3px}
-.tc-info{flex:1;min-width:0}
-.tc-name{font-size:17px;font-weight:900;line-height:1.2;margin-bottom:3px;letter-spacing:-.2px}
-.tc-model{font-size:14px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.tc-op{font-size:12px;color:var(--cy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:600}
-.tc-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
-.eta-box{text-align:right}
-.eta-v{font-size:26px;font-weight:900;color:var(--y);line-height:1}
-.eta-l{font-size:11px;color:var(--mu);font-weight:700;margin-top:1px}
-.plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:4px 9px;border-radius:5px;font-size:14px;letter-spacing:.7px;white-space:nowrap}
-
-/* ── TAGS ── */
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:11px}
-.tag{font-size:12px;font-weight:700;padding:4px 9px;border-radius:6px;border:1px solid}
-.ty{background:var(--yd);color:var(--y);border-color:rgba(245,197,24,.3)}
-.tg{background:rgba(34,197,94,.08);color:var(--gr);border-color:rgba(34,197,94,.25)}
-.tb{background:rgba(59,130,246,.08);color:var(--bl);border-color:rgba(59,130,246,.25)}
-.to{background:rgba(249,115,22,.08);color:var(--or);border-color:rgba(249,115,22,.25)}
-.tp{background:rgba(168,85,247,.08);color:var(--pu);border-color:rgba(168,85,247,.25)}
-.tmu{background:rgba(119,119,119,.06);color:var(--mu);border-color:var(--border)}
-.tc-bot{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.price-main{font-size:23px;font-weight:900;color:var(--y);line-height:1}
+.tc{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:0;cursor:pointer;overflow:hidden;transition:border-color .15s,box-shadow .15s}
+.tc:active,.tc.sel{border-color:var(--y);box-shadow:0 0 0 1px var(--y)}
+/* coloured top accent bar instead of stripe */
+.tc-accent{height:4px;width:100%;background:var(--border2)}
+.tc-accent.on{background:var(--gr)}
+.tc-accent.prem{background:var(--pu)}
+.tc-accent.eco{background:var(--gr)}
+.tc-accent.van{background:var(--or)}
+.tc-body{padding:14px 14px 0}
+/* ROW 1: avatar + name block + eta */
+.tc-row1{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.av{width:54px;height:54px;border-radius:50%;background:var(--s3);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;border:3px solid var(--border2)}
+.av.on{border-color:var(--gr)}
+.av.prem{border-color:var(--pu)}
+.av.eco{border-color:var(--gr)}
+.av.van{border-color:var(--or)}
+.tc-mid{flex:1;min-width:0}
+.tc-name{font-size:18px;font-weight:900;color:var(--tx);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-model{font-size:13px;color:var(--mu);font-weight:600;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-op{font-size:12px;color:var(--cy);font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc-eta{text-align:center;flex-shrink:0;min-width:52px}
+.eta-v{font-size:30px;font-weight:900;color:var(--y);line-height:1}
+.eta-l{font-size:10px;font-weight:800;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+/* ROW 2: plate + status */
+.tc-row2{display:flex;align-items:center;gap:8px;margin-bottom:9px;flex-wrap:wrap}
+.plate{font-family:monospace;font-weight:900;background:var(--y);color:#000;padding:5px 10px;border-radius:6px;font-size:15px;letter-spacing:.8px}
+.sp-on{background:rgba(34,197,94,.12);color:var(--gr);border:1px solid rgba(34,197,94,.35);font-size:12px;font-weight:800;padding:4px 10px;border-radius:20px;display:inline-flex;align-items:center;gap:4px}
+.sp-off{background:var(--s3);color:var(--mu);border:1px solid var(--border);font-size:12px;font-weight:800;padding:4px 10px;border-radius:20px}
+/* ROW 3: tags */
+.tc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.tag{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;border:1px solid}
+.ty{background:var(--yd);color:var(--y);border-color:rgba(245,197,24,.35)}
+.tg{background:rgba(34,197,94,.09);color:var(--gr);border-color:rgba(34,197,94,.3)}
+.tb{background:rgba(59,130,246,.09);color:var(--bl);border-color:rgba(59,130,246,.3)}
+.to{background:rgba(249,115,22,.09);color:var(--or);border-color:rgba(249,115,22,.3)}
+.tp{background:rgba(168,85,247,.09);color:var(--pu);border-color:rgba(168,85,247,.3)}
+.tmu{background:rgba(119,119,119,.07);color:var(--mu);border-color:var(--border)}
+/* ROW 4: price bar - full width, prominent */
+.tc-pricebar{background:var(--s1);border-top:1px solid var(--border);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.price-block{}
+.price-main{font-size:26px;font-weight:900;color:var(--y);line-height:1}
+.price-unit{font-size:14px;font-weight:700;color:var(--mu)}
 .price-sub{font-size:12px;color:var(--mu);margin-top:3px}
-.btn-call{background:rgba(34,197,94,.12);color:var(--gr);border:1.5px solid rgba(34,197,94,.35);border-radius:9px;padding:11px 15px;font-size:14px;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px}
-.btn-ord{background:var(--y);color:#000;border:none;border-radius:9px;padding:11px 18px;font-size:14px;font-weight:900;cursor:pointer}
-.sp-on{background:rgba(34,197,94,.12);color:var(--gr);border:1px solid rgba(34,197,94,.3);font-size:12px;font-weight:800;padding:4px 9px;border-radius:7px}
-.sp-off{background:rgba(119,119,119,.08);color:var(--mu);border:1px solid var(--border);font-size:12px;font-weight:800;padding:4px 9px;border-radius:7px}
+.price-night{color:var(--pu);font-size:11px;font-weight:700}
+.tc-btns{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.btn-call{background:rgba(34,197,94,.12);color:var(--gr);border:2px solid rgba(34,197,94,.35);border-radius:10px;padding:11px 14px;font-size:18px;font-weight:900;cursor:pointer;text-decoration:none;line-height:1}
+.btn-ord{background:var(--y);color:#000;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:900;cursor:pointer;white-space:nowrap}
 /* ── ROUTE BOX ── */
-.route-box{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:0}
-.route-pt{display:flex;align-items:center;gap:10px;padding:6px 0}
-.route-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:2px solid}
-.route-dot.a{background:rgba(34,197,94,.2);border-color:var(--gr)}
-.route-dot.b{background:rgba(245,197,24,.2);border-color:var(--y)}
-.route-line{width:2px;height:20px;background:var(--border2);margin-left:5px;border-radius:1px}
-.route-lbl{font-size:11px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:1px}
-.route-inp{background:transparent;border:none;color:var(--tx);font-size:15px;font-weight:600;outline:none;width:100%;padding:0}
-.route-inp::placeholder{color:var(--mu2);font-weight:400}
+.route-box{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.route-pt{display:flex;align-items:stretch;gap:0}
+.route-icon{width:44px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;padding:14px 0}
+.route-icon.a{background:rgba(34,197,94,.07)}
+.route-icon.b{background:rgba(245,197,24,.07)}
+.route-field{flex:1;padding:12px 12px;border-left:1px solid var(--border)}
+.route-lbl{font-size:11px;color:var(--mu);font-weight:800;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.route-inp{background:transparent;border:none;color:var(--tx);font-size:16px;font-weight:600;outline:none;width:100%;padding:0}
+.route-inp::placeholder{color:var(--mu2);font-weight:400;font-size:15px}
+.route-divider{height:1px;background:var(--border)}
 
 /* ── MAP ── */
 #map{flex:1;background:#0d1117;min-height:200px}
@@ -339,22 +349,22 @@ hr.div{border:none;border-top:1px solid var(--border);margin:5px 0}
   <div id="oStepA" style="display:flex;flex-direction:column;gap:10px">
     <div class="route-box">
       <div class="route-pt">
-        <div class="route-dot a"></div>
-        <div style="flex:1">
-          <div class="route-lbl">Откъде</div>
+        <div class="route-icon a">📍</div>
+        <div class="route-field">
+          <div class="route-lbl">Откъде тръгвате</div>
           <input class="route-inp" id="oFrom" placeholder="Начална точка…"/>
         </div>
       </div>
-      <div class="route-line" style="margin-left:5px"></div>
+      <div class="route-divider"></div>
       <div class="route-pt">
-        <div class="route-dot b"></div>
-        <div style="flex:1">
-          <div class="route-lbl">Накъде</div>
+        <div class="route-icon b">🏁</div>
+        <div class="route-field">
+          <div class="route-lbl">Накъде пътувате</div>
           <input class="route-inp" id="oTo" placeholder="Дестинация…"/>
         </div>
       </div>
     </div>
-    <div class="notice n-info" style="font-size:13px">💡 Плащате директно на шофьора. Без комисионна от FishBakshish.</div>
+    <div class="notice n-info" style="font-size:13px">💡 Плащате директно на шофьора. Без комисионна.</div>
     <button class="btn btn-y" onclick="confirmOrder()">🚕 Потвърди поръчката</button>
     <button class="btn btn-g" onclick="closeModal()">← Назад</button>
   </div>
@@ -517,57 +527,69 @@ function sortD(data,key){
 }
 
 /* ── CARD HTML ── */
-function stripeClass(t){if(t.on&&t.t==='premium')return'prem';if(t.on&&t.t==='eco')return'eco';if(t.on&&t.t==='minivan')return'van';return t.on?'on':'';}
-function avClass(t){if(t.t==='premium')return'prem';if(t.t==='eco')return'eco';if(t.t==='minivan')return'van';return'';}
-
-function tagHtml(t){
-  const tags=[];
-  if(t.t==='premium')tags.push('<span class="tag ty">💎 Премиум</span>');
-  if(t.t==='eco')tags.push('<span class="tag tg">🌿 Еко</span>');
-  if(t.t==='minivan')tags.push('<span class="tag to">🚐 '+t.se+' места</span>');
-  if(t.sm)tags.push('<span class="tag to">🚬 Пушачи</span>');
-  else tags.push('<span class="tag tg">🚭</span>');
-  if(t.ch)tags.push('<span class="tag ty">👶 Детско</span>');
-  if(t.ac)tags.push('<span class="tag tb">❄️</span>');
-  if(t.ca)tags.push('<span class="tag tg">💳</span>');
-  if(t.lr&&t.t!=='premium'&&t.t!=='minivan')tags.push('<span class="tag tp">🦵 Legroom</span>');
-  if(t.pe)tags.push('<span class="tag tmu">🐾</span>');
-  if(t.en)tags.push('<span class="tag tb">🇬🇧</span>');
-  return tags.join('');
+function accentClass(t){
+  if(t.t==='premium') return 'prem';
+  if(t.t==='eco') return 'eco';
+  if(t.t==='minivan') return 'van';
+  return t.on?'on':'';
+}
+function avClass(t){
+  if(t.t==='premium') return 'prem';
+  if(t.t==='eco') return 'eco';
+  if(t.t==='minivan') return 'van';
+  return t.on?'on':'';
 }
 
 function cardHtml(t){
   const r=isNight()?t.kn:t.kd;
   const s=isNight()?t.sn:t.sd;
-  const drvName=t.d||t.op.split(' ')[0]+'…';
+  const nm=t.d||t.op.replace(/ЕООД|АД|ООД|ДЗЗД/g,'').trim();
+  const ac=accentClass(t);
+  const tags=[];
+  if(t.t==='premium') tags.push('<span class="tag ty">💎 Премиум</span>');
+  if(t.t==='eco')     tags.push('<span class="tag tg">🌿 Еко</span>');
+  if(t.t==='minivan') tags.push('<span class="tag to">🚐 '+t.se+' места</span>');
+  if(t.sm)  tags.push('<span class="tag to">🚬</span>');
+  else      tags.push('<span class="tag tg">🚭</span>');
+  if(t.ch)  tags.push('<span class="tag ty">👶</span>');
+  if(t.ac)  tags.push('<span class="tag tb">❄️</span>');
+  if(t.ca)  tags.push('<span class="tag tg">💳</span>');
+  if(t.lr&&t.t!=='premium'&&t.t!=='minivan') tags.push('<span class="tag tp">🦵 Legroom</span>');
+  if(t.pe)  tags.push('<span class="tag tmu">🐾</span>');
+  if(t.en)  tags.push('<span class="tag tb">🇬🇧</span>');
+
   return`<div class="tc" onclick="openModal(${t.id})">
-    <div class="tc-stripe ${stripeClass(t)}"></div>
-    <div class="tc-top">
-      <div class="avatar ${avClass(t)}">${t.avatar}</div>
-      <div class="tc-info">
-        <div class="tc-name">${esc(drvName)}</div>
-        <div class="tc-model">${esc(t.m)} · ${t.y} · ${esc(t.color)}</div>
+  <div class="tc-accent ${ac}"></div>
+  <div class="tc-body">
+    <div class="tc-row1">
+      <div class="av ${avClass(t)}">${t.avatar}</div>
+      <div class="tc-mid">
+        <div class="tc-name">${esc(nm)}</div>
+        <div class="tc-model">${esc(t.m)} · ${t.y}</div>
         <div class="tc-op">🏢 ${esc(t.op)}</div>
       </div>
-      <div class="tc-right">
-        <span class="${t.on?'sp-on':'sp-off'}">${t.on?'🟢 Онлайн':'⚫ Офлайн'}</span>
-        <div class="eta-box"><div class="eta-v">${t.et}'</div><div class="eta-l">минути</div></div>
-        <span class="plate">${esc(t.p)}</span>
+      <div class="tc-eta">
+        <div class="eta-v">${t.et}</div>
+        <div class="eta-l">мин</div>
       </div>
     </div>
-    <div class="tags">${tagHtml(t)}</div>
-    <div class="tc-bot">
-      <div>
-        <div class="price-main">${r.toFixed(2)}<span style="font-size:13px;font-weight:600;color:var(--mu)"> €/км</span></div>
-        <div class="price-sub">Старт: ${s.toFixed(2)}€${isNight()?'<span style="color:var(--pu)"> · 🌙 Нощна</span>':''}</div>
-      </div>
-      <div style="display:flex;gap:7px">
-        <a class="btn-call" href="tel:${t.phone.replace(/\s/g,'')}" onclick="event.stopPropagation()">📞</a>
-        <button class="btn-ord" onclick="event.stopPropagation();openModal(${t.id})">Поръчай</button>
-      </div>
+    <div class="tc-row2">
+      <span class="plate">${esc(t.p)}</span>
+      <span class="${t.on?'sp-on':'sp-off'}">${t.on?'● Онлайн':'○ Офлайн'}</span>
     </div>
-  </div>`;
-}
+    <div class="tc-tags">${tags.join('')}</div>
+  </div>
+  <div class="tc-pricebar">
+    <div class="price-block">
+      <span class="price-main">${r.toFixed(2)}</span><span class="price-unit"> €/км</span>
+      <div class="price-sub">Старт: ${s.toFixed(2)}€ · Чакане: 0.25€/мин${isNight()?'  <span class="price-night">🌙 Нощна</span>':''}</div>
+    </div>
+    <div class="tc-btns">
+      <a class="btn-call" href="tel:${t.phone.replace(/\s/g,'')}" onclick="event.stopPropagation()" title="${t.phone}">📞</a>
+      <button class="btn-ord" onclick="event.stopPropagation();openModal(${t.id})">Поръчай</button>
+    </div>
+  </div>
+</div>`;
 
 /* ── MAP ── */
 function loadLeaflet(cb){
@@ -664,7 +686,21 @@ function openModal(id){
   document.getElementById('mLic').textContent='Лиц. № '+t.l+' · '+t.zn+' · ЕТА: ~'+t.et+' мин';
   document.getElementById('mStatus').innerHTML=t.on?'<span class="sp-on">🟢 Онлайн</span>':'<span class="sp-off">⚫ Офлайн</span>';
   document.getElementById('mPlate').textContent=t.p;
-  document.getElementById('mTags').innerHTML=tagHtml(t);
+  document.getElementById('mTags').innerHTML=(()=>{
+    const t=selTaxi,tags=[];
+    if(t.t==='premium') tags.push('<span class="tag ty">💎 Премиум</span>');
+    if(t.t==='eco')     tags.push('<span class="tag tg">🌿 Еко</span>');
+    if(t.t==='minivan') tags.push('<span class="tag to">🚐 '+t.se+' места</span>');
+    if(t.sm) tags.push('<span class="tag to">🚬 Пушачи</span>');
+    else     tags.push('<span class="tag tg">🚭 Непушачи</span>');
+    if(t.ch) tags.push('<span class="tag ty">👶 Детско</span>');
+    if(t.ac) tags.push('<span class="tag tb">❄️ AC</span>');
+    if(t.ca) tags.push('<span class="tag tg">💳 Карта</span>');
+    if(t.lr) tags.push('<span class="tag tp">🦵 Legroom</span>');
+    if(t.pe) tags.push('<span class="tag tmu">🐾 Животни</span>');
+    if(t.en) tags.push('<span class="tag tb">🇬🇧 EN</span>');
+    return tags.join('');
+  })();
   document.getElementById('mSd').textContent=t.sd.toFixed(2)+'€';
   document.getElementById('mSn').textContent='/ '+t.sn.toFixed(2)+'€';
   document.getElementById('mKd').textContent=t.kd.toFixed(2)+'€';
@@ -708,11 +744,13 @@ function confirmOrder(){
   document.getElementById('oStepA').style.display='none';
   document.getElementById('oStepB').style.display='flex';
   document.getElementById('oConf').innerHTML=`
-    <div style="display:flex;flex-direction:column;gap:6px">
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:50%;background:var(--gr);flex-shrink:0"></div><span>${esc(from)}</span></div>
-      <div style="width:2px;height:16px;background:var(--border2);margin-left:4px"></div>
-      <div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:50%;background:var(--y);flex-shrink:0"></div><span>${esc(to)}</span></div>
-      <div style="margin-top:4px;font-size:13px;color:var(--mu)">⏱ ~${t.et} мин &nbsp;·&nbsp; 💰 ~${(s+km*r).toFixed(2)}€ &nbsp;·&nbsp; ${esc(t.p)}</div>
+    <div style="display:flex;flex-direction:column;gap:5px;font-size:14px">
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">📍</span><span style="font-weight:700">${esc(from)}</span></div>
+      <div style="margin-left:9px;width:2px;height:14px;background:var(--border2)"></div>
+      <div style="display:flex;align-items:center;gap:10px"><span style="font-size:18px">🏁</span><span style="font-weight:700">${esc(to)}</span></div>
+      <div style="margin-top:6px;padding-top:8px;border-top:1px solid var(--border);font-size:13px;color:var(--mu)">
+        ⏱ ~${t.et} мин &nbsp;·&nbsp; 💰 ~${(s+km*r).toFixed(2)}€ &nbsp;·&nbsp; 🚗 ${esc(t.p)}
+      </div>
     </div>`;
   document.getElementById('ridebar').classList.add('on');
   document.getElementById('rb-d').textContent=(t.d||t.m)+' · '+t.p;
